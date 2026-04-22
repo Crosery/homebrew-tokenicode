@@ -1,0 +1,45 @@
+name: Update Cask
+
+on:
+  schedule:
+    - cron: "47 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update tokenicode cask
+        run: node scripts/update-cask.js
+
+      - name: Register tap locally
+        run: |
+          TAP_ROOT="$(brew --repo)/Library/Taps/crosery"
+          mkdir -p "${TAP_ROOT}"
+          ln -s "${GITHUB_WORKSPACE}" "${TAP_ROOT}/homebrew-tokenicode"
+
+      - name: Validate cask
+        run: |
+          brew audit --cask --strict --tap=crosery/tokenicode tokenicode
+          brew livecheck --cask --tap=crosery/tokenicode tokenicode
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet -- Casks/tokenicode.rb; then
+            echo "Cask already up to date"
+            exit 0
+          fi
+
+          VERSION=$(ruby -ne 'puts $1 if $_ =~ /^\s*version "([^"]+)"/' Casks/tokenicode.rb)
+
+          git config user.name "Crosery"
+          git config user.email "luoxi2024@gmail.com"
+          git add Casks/tokenicode.rb
+          git commit -m "feat: update to ${VERSION}"
+          git push
