@@ -1,14 +1,14 @@
 cask "tokenicode" do
   arch arm: "aarch64", intel: "x64"
 
-  version "0.10.6"
+  version "0.10.7"
 
   on_arm do
-    sha256 "e49f7f0dd52713c2f683dfef7141a613c6b4b39cf8a4b4d0aaf01897028815f4"
+    sha256 "aeb48705667a92c84e9854e9731be25038ba039eb2833577f2ca6d66bb827a57"
   end
 
   on_intel do
-    sha256 "6d5bc05d25371dc6567a1dceb704eb0e4ab79becf5e526afcb6efefbfef83699"
+    sha256 "0c25df1301e1447c2482e8b0c3bdccce57463a9882d20e8af59911e8668edecd"
   end
 
   url "https://github.com/yiliqi78/TOKENICODE/releases/download/v#{version}/TOKENICODE_#{version}_#{arch}.dmg"
